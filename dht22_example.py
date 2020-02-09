@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import dht11
+import dht22
 import time
 import datetime
 
@@ -8,7 +8,7 @@ GPIO.setwarnings(True)
 GPIO.setmode(GPIO.BCM)
 
 # read data using pin 14
-instance = dht11.DHT11(pin=14)
+instance = dht22.DHT22(pin=14)
 
 try:
 	while True:
@@ -19,7 +19,7 @@ try:
 	        print("Temperature: %-3.1f C" % result.temperature)
 	        print("Humidity: %-3.1f %%" % result.humidity)
 
-	    time.sleep(6)
+	    time.sleep(5)
 
 except KeyboardInterrupt:
     print("Cleanup")

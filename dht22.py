@@ -2,8 +2,8 @@ import time
 import RPi
 
 
-class DHT11Result:
-    'DHT11 sensor result returned by DHT11.read() method'
+class DHT22Result:
+    'DHT22 sensor result returned by DHT22.read() method'
 
     ERR_NO_ERROR = 0
     ERR_MISSING_DATA = 1
@@ -19,11 +19,11 @@ class DHT11Result:
         self.humidity = humidity
 
     def is_valid(self):
-        return self.error_code == DHT11Result.ERR_NO_ERROR
+        return self.error_code == DHT22Result.ERR_NO_ERROR
 
 
-class DHT11:
-    'DHT11 sensor reader class for Raspberry'
+class DHT22:
+    'DHT22 sensor reader class for Raspberry'
 
     __pin = 0
 
@@ -37,7 +37,9 @@ class DHT11:
         self.__send_and_sleep(RPi.GPIO.HIGH, 0.05)
 
         # pull down to low
-        self.__send_and_sleep(RPi.GPIO.LOW, 0.02)
+        # self.__send_and_sleep(RPi.GPIO.LOW, 0.02)
+        # see https://www.souichi.club/raspberrypi/temperature-and-humidity02/
+        self.__send_and_sleep(RPi.GPIO.LOW, 0.0008) 
 
         # change to input using pull up
         RPi.GPIO.setup(self.__pin, RPi.GPIO.IN, RPi.GPIO.PUD_UP)
@@ -50,7 +52,7 @@ class DHT11:
 
         # if bit count mismatch, return error (4 byte data + 1 byte checksum)
         if len(pull_up_lengths) != 40:
-            return DHT11Result(DHT11Result.ERR_MISSING_DATA, 0, 0)
+            return DHT22Result(DHT22Result.ERR_MISSING_DATA, 0, 0)
 
         # calculate bits from lengths of the pull up periods
         bits = self.__calculate_bits(pull_up_lengths)
@@ -61,7 +63,7 @@ class DHT11:
         # calculate checksum and check
         checksum = self.__calculate_checksum(the_bytes)
         if the_bytes[4] != checksum:
-            return DHT11Result(DHT11Result.ERR_CRC, 0, 0)
+            return DHT22Result(DHT22Result.ERR_CRC, 0, 0)
 
         # ok, we have valid data
 
@@ -71,10 +73,14 @@ class DHT11:
         # the_bytes[2]: temperature int
         # the_bytes[3]: temperature decimal
 
-        temperature = the_bytes[2] + float(the_bytes[3]) / 10
-        humidity = the_bytes[0] + float(the_bytes[1]) / 10
+        #temperature = the_bytes[2] + float(the_bytes[3]) / 10
+        #humidity = the_bytes[0] + float(the_bytes[1]) / 10
+        
+        # https://www.souichi.club/raspberrypi/temperature-and-humidity02/
+        temperature = ((the_bytes[2]*256) + the_bytes[3]) / 10
+        humidity = ((the_bytes[0]*256) + the_bytes[1]) / 10
 
-        return DHT11Result(DHT11Result.ERR_NO_ERROR, temperature, humidity)
+        return DHT22Result(DHT22Result.ERR_NO_ERROR, temperature, humidity)
 
     def __send_and_sleep(self, output, sleep):
         RPi.GPIO.output(self.__pin, output)
