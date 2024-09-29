@@ -12,14 +12,14 @@ instance = dht22.DHT22(pin=14)
 
 try:
 	while True:
-	    result = instance.read()
-	    if result.is_valid():
-	        print("Last valid input: " + str(datetime.datetime.now()))
+		result = instance.read()
+		if result.is_valid():
+			print("Last valid input: " + str(datetime.datetime.now()))
 
-	        print("Temperature: %-3.1f C" % result.temperature)
-	        print("Humidity: %-3.1f %%" % result.humidity)
+			print("Temperature: %-3.1f C" % result.temperature)
+			print("Humidity: %-3.1f %%" % result.humidity)
 
-	    time.sleep(5)
+		time.sleep(5)
 
 except KeyboardInterrupt:
     print("Cleanup")
