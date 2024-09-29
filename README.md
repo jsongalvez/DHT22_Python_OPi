@@ -3,6 +3,7 @@
 This simple class can be used for reading temperature and humidity values from DHT22 sensor on Raspberry Pi.
 
 Original Source Code: https://github.com/szazo/DHT11_Python
+DHT22 Source Code: https://github.com/MineAP/DHT22_Python
 
 # Usage
 
@@ -12,16 +13,16 @@ Original Source Code: https://github.com/szazo/DHT11_Python
 For example:
 
 ```python
-import RPi.GPIO as GPIO
+import OPi.GPIO as GPIO
 import dht22
 
 # initialize GPIO
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.cleanup()
+GPIO.setboard(4) # Orange Pi One
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(True)
 
-# read data using pin 14
-instance = DHT22.DHT22(pin = 14)
+# read data using pin 7
+instance = dht22.DHT22(pin=7)
 result = instance.read()
 
 if result.is_valid():
