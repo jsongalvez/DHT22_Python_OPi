@@ -1,5 +1,5 @@
 import time
-import RPi.GPIO as GPIO
+import OPi.GPIO as GPIO
 
 
 class DHT22Result:
